@@ -13,6 +13,7 @@ import { LocalDataService } from 'src/dataServices/localData.service';
             <span style="margin-left:3em"><a class="menu_links" (click)='openTab()'>Open 4711 tab</a></span>
             <span style="margin-left:3em"><a class="menu_links" (click)='saveDockingLayout()' >Save Dockinglayout</a></span>
             <span style="margin-left:3em"><a class="menu_links" (click)='showSettings()'>Settings</a></span>
+            <span style="margin-left:3em"><a class="menu_links" (click)='addChart()'>Add chart</a></span>
             </mat-toolbar-row>`,
   styles: [` a.menu_links {
             cursor: pointer;
@@ -28,12 +29,25 @@ export class NavComponent {
 
   }
 
+
   showSettings(): void {
       this.router.navigate(['settings']);
   }
 
   showDashboard(): void {
     this.router.navigate(['dashboard'], { queryParams: { title: 'main' } });
+  }
+
+  addChart(): void {
+    const testComponentConfig: IDockingComponentConfig = {
+      id: '0',
+      componentName: 'chart',
+      title: 'my chart tab',
+      componentData: {
+        myValue: 'Test Value'
+      }
+    };
+    this.dockingService.createComponentInCurrentDockingLayout(testComponentConfig);
   }
 
   addTab(): void {

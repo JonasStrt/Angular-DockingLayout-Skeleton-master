@@ -18,7 +18,9 @@ import { appRoutes } from './routes';
 import { SettingComponent } from '../widgets/setting.component';
 import { TestComponent } from 'src/docking/dockingWidgets/test.component';
 import { LoadingComponent } from 'src/docking/dockingWidgets/loading.component';
+import {  ChartModule } from '@syncfusion/ej2-angular-charts';
 import { from } from 'rxjs';
+import { DockingChartComponent } from 'src/docking/dockingWidgets/dockingChart.component';
 
 // It is required to have JQuery as global in the window object.
 window['$'] = $;
@@ -32,6 +34,7 @@ const COMPONENTS = [
   SettingComponent,
   TestComponent,
   LoadingComponent,
+  DockingChartComponent,
   DockingLayoutComponent
 ];
 
@@ -46,6 +49,10 @@ const componentTypes: ComponentType[] = [{
 {
   name: 'loading',
   type: LoadingComponent
+},
+{
+  name: 'chart',
+  type: DockingChartComponent
 }
 ];
 
@@ -59,6 +66,7 @@ const componentTypes: ComponentType[] = [{
     MatToolbarModule,
     MatProgressSpinnerModule,
     MatInputModule,
+    ChartModule,
     GoldenLayoutModule.forRoot(componentTypes),
     FormsModule,
     RouterModule.forRoot(appRoutes)
