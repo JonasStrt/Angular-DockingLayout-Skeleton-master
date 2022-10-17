@@ -4,6 +4,7 @@ import { GoldenLayoutComponentState, GoldenLayoutContainer } from 'node_modules/
 import { IDockingComponentConfig } from './interfaces/IDockingComponentConfig';
 import { DataService } from '../dataServices/data.service';
 import GoldenLayout from 'golden-layout';
+import { MasterSlaveService } from './services/masterSlave.service';
 
 /**
  * An abstract class which represents a component that can be added to [[dockingLayout.component]].

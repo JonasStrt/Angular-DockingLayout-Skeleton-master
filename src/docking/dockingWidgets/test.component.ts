@@ -6,13 +6,15 @@ import {
 import { IDockingComponentConfig } from 'src/docking/interfaces/IDockingComponentConfig';
 import { DataService } from 'src/dataServices/data.service';
 import GoldenLayout from 'golden-layout';
+import { Subject } from 'rxjs';
+import { MasterSlaveService } from '../services/masterSlave.service';
 
 
 @Component({
   selector: 'app-test',
   template: ` <mat-form-field class="example-full-width">
   <mat-label>Enter a Value</mat-label>
-  <input matInput placeholder="Some Value" [(ngModel)]='componentConfig.componentData.myValue'
+  <input (change) = "triggerChange()" matInput placeholder="Some Value" [(ngModel)]='componentConfig.componentData.myValue'
    [value]= 'componentConfig.componentData.myValue'>
   </mat-form-field>`
 })
@@ -37,10 +39,12 @@ export class TestComponent extends DockingComponent {
         }
     };
 
+    public changingSubject = new Subject<string>();
+
   constructor(
     @Optional()@Inject(GoldenLayoutComponentState) private state: any,
     @Optional()@Inject(GoldenLayoutContainer) private container: GoldenLayout.Container,
-    private dataService: DataService) {
+    private dataService: DataService, private masterSlaveService: MasterSlaveService) {
     super(state, container, dataService);
     if ( this.state !== null) {
         // get IDockingComponentConfig by th given id in goldenlayout state
@@ -49,11 +53,30 @@ export class TestComponent extends DockingComponent {
         this.initInLayout(this.componentConfig);
         // set title
         this.container.setTitle(this.componentConfig.title);
+        this.observeChanges();
       }
     }
 
   initInLayout(myComponentConfig: IDockingComponentConfig): void {
      this.componentConfig = myComponentConfig;
+     if(this.componentConfig["state"] === "slave" ) {
+      this.masterSlaveService.addSlave(this.componentConfig["id"], this.changingSubject);
+     }
+     else if(this.componentConfig["state"] === "master") {
+      this.masterSlaveService.addMaster(this.componentConfig["id"]);
+     }
+  }
+
+  observeChanges(): void {
+    this.changingSubject.subscribe((val) => {
+      this.componentConfig.componentData.myValue = val;
+    });
+  }
+
+  triggerChange() {
+    if(this.masterSlaveService.isMaster(this.componentConfig["id"])) {
+      this.masterSlaveService.triggerSlaves(this.componentConfig.componentData.myValue);
+    }
   }
 
   getCurrentComponentConfig(): IDockingComponentConfig {
